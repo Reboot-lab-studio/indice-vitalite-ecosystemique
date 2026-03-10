@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indice de Vitalité Écosystémique — Benjamin Chaminade</title>
+  <meta name="description" content="Diagnostic IVE : évaluez la santé de votre écosystème professionnel sur 8 dimensions. Management Régénératif par Benjamin Chaminade." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    #ive-app *, #ive-app *::before, #ive-app *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    #ive-app {
+      --vf: #0f2920; --vm: #1a3d2b; --vv: #22c55e; --vc: #86efac; --vp: #a7f3d0; --vb: #f0fdf4;
+      --tx: #1e293b; --gr: #64748b; --gc: #e2e8f0;
+      --ft: 'Playfair Display', Georgia, serif; --fb: 'Lora', Georgia, serif;
+      font-family: var(--fb); color: var(--tx); background: #f8fafc; width: 100%;
+    }
+    #ive-app .ive-screen { display: none; }
+    #ive-app .ive-screen.active { display: block; }
+
+    /* INTRO */
+    #ive-app #ive-intro { background: linear-gradient(135deg,#0f2920 0%,#1a3d2b 50%,#0f2920 100%); display:none; flex-direction:column; align-items:center; justify-content:center; padding:48px 20px; text-align:center; }
+    #ive-app #ive-intro.active { display:flex; }
+    #ive-app .i-badge { color:var(--vc); font-size:12px; letter-spacing:4px; text-transform:uppercase; margin-bottom:16px; }
+    #ive-app .i-emoji { font-size:64px; margin-bottom:16px; line-height:1; }
+    #ive-app .i-titre { font-family:var(--ft); color:white; font-size:clamp(28px,5vw,52px); font-weight:900; line-height:1.1; margin-bottom:20px; }
+    #ive-app .i-titre span { color:var(--vc); }
+    #ive-app .i-desc { color:var(--vp); font-size:16px; line-height:1.75; max-width:580px; margin:0 auto 40px; }
+    #ive-app .i-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; max-width:620px; width:100%; margin:0 auto 44px; }
+    @media(max-width:480px){ #ive-app .i-grid { grid-template-columns:repeat(2,1fr); } }
+    #ive-app .i-card { background:rgba(255,255,255,.07); border:1px solid rgba(134,239,172,.2); border-radius:12px; padding:12px 8px; text-align:center; }
+    #ive-app .i-card-icon { font-size:22px; margin-bottom:4px; line-height:1.2; }
+    #ive-app .i-card-meta { color:var(--vc); font-size:10px; line-height:1.3; }
+    #ive-app .i-note { color:#6ee7b7; font-size:13px; margin-top:14px; }
+
+    /* BOUTONS */
+    #ive-app .btn-p { background:linear-gradient(135deg,#22c55e,#16a34a); color:white; border:none; border-radius:50px; padding:17px 50px; font-size:16px; font-weight:700; cursor:pointer; font-family:var(--ft); box-shadow:0 8px 28px rgba(34,197,94,.4); letter-spacing:.5px; transition:transform .15s; }
+    #ive-app .btn-p:hover { transform:translateY(-2px); }
+    #ive-app .btn-s { background:white; border:2px solid var(--gc); border-radius:50px; padding:13px 26px; font-size:14px; cursor:pointer; color:var(--gr); font-family:var(--fb); transition:border-color .15s; }
+    #ive-app .btn-s:hover { border-color:var(--vm); color:var(--vm); }
+    #ive-app .btn-n { background:linear-gradient(135deg,#22c55e,#16a34a); border:none; border-radius:50px; padding:13px 30px; font-size:15px; font-weight:700; cursor:pointer; color:white; font-family:var(--ft); box-shadow:0 4px 14px rgba(34,197,94,.3); transition:transform .15s; }
+    #ive-app .btn-n:hover { transform:translateY(-1px); }
+
+    /* QUIZ */
+    #ive-app #ive-quiz { background:#f8fafc; }
+    #ive-app .qh { background:white; border-bottom:1px solid var(--gc); padding:14px 20px; position:sticky; top:0; z-index:10; }
+    #ive-app .qh-i { max-width:760px; margin:0 auto; }
+    #ive-app .qh-l { display:flex; justify-content:space-between; font-size:12px; color:var(--gr); margin-bottom:8px; }
+    #ive-app .qh-l .pct { color:var(--vm); font-weight:700; font-family:var(--ft); }
+    #ive-app .pb { height:5px; background:var(--gc); border-radius:3px; overflow:hidden; }
+    #ive-app .pf { height:100%; background:linear-gradient(90deg,#22c55e,#0f2920); border-radius:3px; transition:width .4s ease; }
+    #ive-app .qb { max-width:760px; margin:0 auto; padding:28px 20px; }
+    #ive-app .dh { background:linear-gradient(135deg,#0f2920,#1a3d2b); border-radius:20px; padding:28px; margin-bottom:24px; position:relative; overflow:hidden; }
+    #ive-app .dh-bg { position:absolute; right:20px; top:50%; transform:translateY(-50%); font-size:72px; opacity:.1; pointer-events:none; line-height:1; }
+    #ive-app .dh-badge { color:var(--vc); font-size:11px; letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; }
+    #ive-app .dh-titre { color:white; font-family:var(--ft); font-size:24px; font-weight:900; margin-bottom:10px; }
+    #ive-app .dh-desc { color:var(--vp); font-size:14px; line-height:1.65; }
+    #ive-app .qc { background:white; border-radius:14px; padding:20px; margin-bottom:14px; border:1px solid var(--gc); box-shadow:0 2px 6px rgba(0,0,0,.04); }
+    #ive-app .qt { font-size:14px; line-height:1.65; color:var(--tx); margin-bottom:14px; }
+    #ive-app .qn { color:var(--vm); font-weight:700; margin-right:6px; }
+    #ive-app .sl { display:flex; justify-content:space-between; font-size:10px; color:#94a3b8; margin-bottom:4px; }
+    #ive-app .sr { display:flex; align-items:center; gap:10px; }
+    #ive-app .se { font-size:11px; color:#94a3b8; min-width:12px; font-family:var(--ft); }
+    #ive-app input[type=range] { -webkit-appearance:none; appearance:none; flex:1; height:6px; border-radius:3px; outline:none; cursor:pointer; background:var(--gc); }
+    #ive-app input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--vm); cursor:pointer; border:3px solid white; box-shadow:0 2px 8px rgba(0,0,0,.25); }
+    #ive-app input[type=range]::-moz-range-thumb { width:22px; height:22px; border-radius:50%; background:var(--vm); cursor:pointer; border:3px solid white; }
+    #ive-app .sv { min-width:38px; text-align:center; font-size:20px; font-weight:900; font-family:var(--ft); }
+    #ive-app .ab { background:#fef3c7; border:1px solid #fcd34d; border-radius:12px; padding:14px 18px; margin-top:18px; }
+    #ive-app .at { font-size:10px; color:#92400e; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; font-family:var(--ft); }
+    #ive-app .ax { color:#78350f; font-size:13px; line-height:1.5; }
+    #ive-app .qnav { display:flex; justify-content:space-between; gap:12px; margin-top:24px; }
+
+    /* RÉSULTATS */
+    #ive-app #ive-results { background:#f8fafc; }
+    #ive-app .rh { background:linear-gradient(135deg,#0f2920 0%,#1a3d2b 60%,#0f2920 100%); padding:48px 20px 36px; text-align:center; }
+    #ive-app .rb { color:var(--vc); font-size:10px; letter-spacing:4px; text-transform:uppercase; margin-bottom:14px; }
+    #ive-app .re { font-size:72px; margin-bottom:8px; line-height:1.2; }
+    #ive-app .rp { display:inline-block; color:white; border-radius:50px; padding:7px 22px; font-size:13px; font-weight:700; margin-bottom:18px; font-family:var(--ft); letter-spacing:1px; }
+    #ive-app .rsb { color:white; font-size:clamp(60px,11vw,88px); font-weight:900; font-family:var(--ft); line-height:1; }
+    #ive-app .rsd { color:var(--vc); font-size:26px; vertical-align:middle; }
+    #ive-app .rgl { color:#a7f3d0; font-size:12px; margin-bottom:8px; }
+    #ive-app .rpn { color:var(--vp); font-size:13px; margin:8px 0 20px; }
+    #ive-app .rpn strong { color:var(--vc); }
+
+    /* Profil */
+    #ive-app .profil-box { background:rgba(255,255,255,.1); border:1px solid rgba(134,239,172,.3); border-radius:16px; padding:20px 24px; max-width:640px; margin:0 auto 24px; text-align:left; }
+    #ive-app .profil-nom { font-family:var(--ft); font-size:18px; font-weight:900; color:white; margin-bottom:8px; }
+    #ive-app .profil-desc { font-size:13px; color:var(--vp); line-height:1.65; margin-bottom:12px; }
+    #ive-app .profil-posture-label { font-size:10px; color:var(--vc); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; font-family:var(--ft); }
+    #ive-app .profil-posture { font-size:13px; color:white; line-height:1.65; }
+
+    /* Chips scores */
+    #ive-app .ss { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:600px; margin:0 auto 28px; }
+    #ive-app .sc { background:rgba(255,255,255,.1); border:1px solid rgba(134,239,172,.25); border-radius:50px; padding:6px 14px; display:flex; align-items:center; gap:6px; }
+    #ive-app .sc-i { font-size:14px; line-height:1; }
+    #ive-app .sc-v { font-size:13px; font-weight:700; font-family:var(--ft); }
+
+    #ive-app .radar-wrap { background:rgba(255,255,255,.08); border-radius:20px; padding:20px; display:inline-block; margin:0 auto; }
+    #ive-app .rbody { max-width:860px; margin:0 auto; padding:36px 20px; }
+
+    /* Diag box */
+    #ive-app .diag-box { border-radius:18px; padding:24px; margin-bottom:28px; border-width:2px; border-style:solid; }
+    #ive-app .diag-titre { font-family:var(--ft); font-size:20px; margin-bottom:10px; }
+    #ive-app .diag-texte { font-size:14px; line-height:1.75; color:#374151; margin-bottom:14px; }
+    #ive-app .diag-ref { padding:11px 14px; background:rgba(0,0,0,.06); border-radius:10px; font-size:12px; color:#374151; line-height:1.55; }
+
+    #ive-app .stit { font-family:var(--ft); color:var(--vf); margin-bottom:18px; font-size:22px; }
+
+    /* Cards dimension résultat */
+    #ive-app .drc { background:white; border-radius:16px; padding:20px 22px; margin-bottom:16px; border:1px solid var(--gc); box-shadow:0 2px 8px rgba(0,0,0,.05); }
+    #ive-app .drc-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    #ive-app .drc-left { display:flex; align-items:center; gap:10px; }
+    #ive-app .drc-icon { font-size:24px; line-height:1; }
+    #ive-app .drc-name { font-weight:700; color:var(--tx); font-size:15px; font-family:var(--ft); }
+    #ive-app .drc-meta { color:#94a3b8; font-size:11px; }
+    #ive-app .drc-score { font-size:28px; font-weight:900; font-family:var(--ft); white-space:nowrap; }
+    #ive-app .bar-bg { height:8px; background:#f1f5f9; border-radius:4px; overflow:hidden; margin-bottom:12px; }
+    #ive-app .bar-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+
+    /* Analyse détaillée */
+    #ive-app .analyse { font-size:13px; line-height:1.7; color:#374151; margin-bottom:14px; padding:14px 16px; background:#f8fafc; border-left:3px solid var(--gc); border-radius:0 8px 8px 0; }
+    #ive-app .analyse em { font-style:italic; color:var(--vm); }
+
+    /* Actions rapides */
+    #ive-app .actions-wrap { margin-top:14px; }
+    #ive-app .actions-titre { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; font-family:var(--ft); }
+    #ive-app .action-item { display:flex; gap:10px; align-items:flex-start; margin-bottom:8px; padding:10px 12px; border-radius:9px; font-size:12px; line-height:1.55; }
+    #ive-app .action-num { font-weight:900; font-family:var(--ft); font-size:16px; min-width:20px; line-height:1.2; }
+    #ive-app .action-urgent .action-item { background:#fef2f2; border:1px solid #fca5a5; color:#7f1d1d; }
+    #ive-app .action-moyen  .action-item { background:#fffbeb; border:1px solid #fcd34d; color:#78350f; }
+    #ive-app .action-fort   .action-item { background:var(--vb); border:1px solid var(--vc); color:#14532d; }
+
+    /* Zones urgence / force */
+    #ive-app .dual-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:28px; }
+    @media(max-width:540px){ #ive-app .dual-grid { grid-template-columns:1fr; } }
+    #ive-app .zone-card { border-radius:14px; padding:20px; }
+    #ive-app .zone-card h3 { font-family:var(--ft); font-size:15px; margin-bottom:16px; }
+    #ive-app .zi { display:flex; align-items:flex-start; gap:8px; margin-bottom:12px; }
+    #ive-app .zi-right { flex:1; }
+    #ive-app .zi-name { font-size:13px; font-weight:700; margin-bottom:3px; }
+    #ive-app .zi-score { font-weight:900; font-family:var(--ft); font-size:14px; white-space:nowrap; margin-top:1px; }
+    #ive-app .zi-actions { font-size:11px; line-height:1.5; margin-top:4px; color:#555; }
+    #ive-app .zi-actions li { margin-left:14px; margin-bottom:2px; list-style:disc; }
+
+    /* Livre */
+    #ive-app .livre-box { background:linear-gradient(135deg,#0f2920,#1a3d2b); border-radius:18px; padding:28px; margin-bottom:28px; color:white; }
+    #ive-app .l-badge { color:var(--vc); font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:10px; }
+    #ive-app .l-titre { font-family:var(--ft); font-size:20px; margin-bottom:14px; }
+    #ive-app .l-desc { color:var(--vp); font-size:13px; line-height:1.75; margin-bottom:18px; }
+    #ive-app .og { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media(max-width:480px){ #ive-app .og { grid-template-columns:1fr; } }
+    #ive-app .oi { background:rgba(255,255,255,.08); border-radius:10px; padding:12px; }
+    #ive-app .oi-i { font-size:18px; margin-bottom:5px; line-height:1.2; }
+    #ive-app .oi-t { font-weight:700; font-size:12px; margin-bottom:3px; font-family:var(--ft); }
+    #ive-app .oi-d { font-size:11px; color:var(--vc); line-height:1.4; }
+
+    #ive-app .cta-stack { display:flex; flex-direction:column; gap:12px; margin-bottom:36px; }
+    #ive-app .btn-cta-c { display:block; background:linear-gradient(135deg,#22c55e,#16a34a); color:white; border-radius:50px; padding:16px; font-size:15px; font-weight:700; text-align:center; text-decoration:none; font-family:var(--ft); box-shadow:0 6px 24px rgba(34,197,94,.35); letter-spacing:.4px; transition:transform .15s; cursor:pointer; border:none; }
+    #ive-app .btn-cta-c:hover { transform:translateY(-2px); }
+    #ive-app .btn-cta-p { display:block; width:100%; background:linear-gradient(135deg,#0f2920,#1a3d2b); color:white; border-radius:50px; padding:14px; font-size:14px; font-weight:700; text-align:center; cursor:pointer; border:none; font-family:var(--ft); letter-spacing:.4px; transition:opacity .15s; }
+    #ive-app .btn-cta-p:hover { opacity:.88; }
+    #ive-app .btn-cta-r { display:block; width:100%; background:white; color:var(--vm); border-radius:50px; padding:14px; font-size:14px; font-weight:600; text-align:center; cursor:pointer; border:2px solid var(--gc); font-family:var(--fb); transition:border-color .15s; }
+    #ive-app .btn-cta-r:hover { border-color:var(--vm); }
+    #ive-app .fn { text-align:center; color:#94a3b8; font-size:11px; padding-bottom:40px; line-height:1.7; }
+    #ive-app .fn a { color:var(--vv); text-decoration:none; }
+
+    @media print {
+      #ive-app .no-print { display:none !important; }
+      #ive-app { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    }
+  </style>
+</head>
+<body>
+<div id="ive-app">
+
+  <!-- INTRO -->
+  <div id="ive-intro" class="ive-screen active">
+    <div class="i-emoji">🌿</div>
+    <div class="i-badge">Management Régénératif · Benjamin Chaminade</div>
+    <h1 class="i-titre">Indice de Vitalité<br><span>Écosystémique</span></h1>
+    <p class="i-desc">Votre organisation fonctionne-t-elle comme une machine à bout de souffle ou comme un écosystème vivant qui se régénère&nbsp;? Ce diagnostic évalue la vitalité réelle de votre environnement professionnel sur 8 dimensions, 5 questions chacune, et révèle votre profil écosystémique.</p>
+    <div class="i-grid" id="ive-grid-intro"></div>
+    <button class="btn-p" onclick="iveGoToQuiz()">Commencer le diagnostic →</button>
+    <p class="i-note">8 dimensions · 40 questions · ~15 minutes</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="ive-quiz" class="ive-screen">
+    <div class="qh"><div class="qh-i">
+      <div class="qh-l"><span id="ive-prog-label">Dimension 1 sur 8</span><span class="pct" id="ive-prog-pct">0%</span></div>
+      <div class="pb"><div class="pf" id="ive-pf" style="width:0%"></div></div>
+    </div></div>
+    <div class="qb">
+      <div class="dh">
+        <div class="dh-bg" id="ive-dh-bg"></div>
+        <div class="dh-badge" id="ive-dh-badge"></div>
+        <div class="dh-titre" id="ive-dh-titre"></div>
+        <div class="dh-desc" id="ive-dh-desc"></div>
+      </div>
+      <div id="ive-questions"></div>
+      <div class="ab"><div class="at">⚠️ Signal d'alerte à surveiller</div><div class="ax" id="ive-alerte"></div></div>
+      <div class="qnav">
+        <button class="btn-s" onclick="ivePrev()">← Précédent</button>
+        <button class="btn-n" id="ive-btn-next" onclick="iveNext()">Dimension suivante →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RÉSULTATS -->
+  <div id="ive-results" class="ive-screen">
+    <div class="rh">
+      <div class="rb">Management Régénératif · Votre diagnostic IVE</div>
+      <div class="re" id="ive-re"></div>
+      <div class="rp" id="ive-rp"></div><br>
+      <span class="rsb" id="ive-rs"></span><span class="rsd">/80</span>
+      <div class="rgl">Score global IVE</div>
+      <p class="rpn" id="ive-rpn"></p>
+      <div class="profil-box" id="ive-profil-box">
+        <div class="profil-nom" id="ive-profil-nom"></div>
+        <div class="profil-desc" id="ive-profil-desc"></div>
+        <div class="profil-posture-label">Posture recommandée</div>
+        <div class="profil-posture" id="ive-profil-posture"></div>
+      </div>
+      <div class="ss" id="ive-ss"></div>
+      <div class="radar-wrap"><svg id="ive-radar" width="240" height="240" viewBox="0 0 240 240"></svg></div>
+    </div>
+    <div class="rbody">
+      <div class="diag-box" id="ive-diag-box">
+        <div class="diag-titre" id="ive-diag-titre"></div>
+        <div class="diag-texte" id="ive-diag-texte"></div>
+        <div class="diag-ref"><strong>Référence Management Régénératif&nbsp;:</strong> L'IVE ne mesure pas vos résultats financiers mais les <em>conditions de possibilité</em> de ces résultats. C'est la différence entre prendre la température d'un malade et analyser la qualité de l'air qu'il respire, de l'eau qu'il boit et de la nourriture qu'il mange.</div>
+      </div>
+      <h2 class="stit">Vos 8 dimensions en détail</h2>
+      <div id="ive-dims-detail"></div>
+      <div class="dual-grid">
+        <div class="zone-card" style="background:#fef2f2;border:1px solid #fca5a5;">
+          <h3 style="color:#991b1b;">🚨 Zones d'urgence — 3 actions immédiates</h3>
+          <div id="ive-urgence"></div>
+        </div>
+        <div class="zone-card" style="background:#f0fdf4;border:1px solid #86efac;">
+          <h3 style="color:#14532d;">🌿 Vos ancrages de force</h3>
+          <div id="ive-force"></div>
+        </div>
+      </div>
+      <div class="livre-box">
+        <div class="l-badge">📚 Management Régénératif — Benjamin Chaminade</div>
+        <h3 class="l-titre">Pour aller plus loin</h3>
+        <p class="l-desc">Ce diagnostic s'appuie sur les 8 composantes de l'écosystème professionnel développées dans <em>Management Régénératif</em>. Un manager régénératif ne se demande pas seulement «&nbsp;comment atteindre mes objectifs&nbsp;?&nbsp;» mais «&nbsp;comment atteindre mes objectifs tout en renforçant la vitalité de mon écosystème&nbsp;?&nbsp;».</p>
+        <div class="og">
+          <div class="oi"><div class="oi-i">🔬</div><div class="oi-t">Diagnostic approfondi</div><div class="oi-d">Audit complet avec entretiens, observations terrain et cartographie des forces et fragilités.</div></div>
+          <div class="oi"><div class="oi-i">🚀</div><div class="oi-t">Accompagnement transformation</div><div class="oi-d">Formation des managers, refonte des processus, évolution culturelle sur mesure.</div></div>
+          <div class="oi"><div class="oi-i">🎤</div><div class="oi-t">Conférence inspirante</div><div class="oi-d">Keynote 45 min pour créer le déclic collectif et donner envie d'agir dès le lundi matin.</div></div>
+          <div class="oi"><div class="oi-i">🛠️</div><div class="oi-t">Atelier opérationnel</div><div class="oi-d">Rituels, règles du jeu, plan de déploiement — des livrables exploitables, pas une jolie synthèse.</div></div>
+        </div>
+      </div>
+      <div class="cta-stack no-print">
+        <a href="https://benjaminchaminade.com/contact/" target="_blank" rel="noopener noreferrer" class="btn-cta-c">🌿 Contacter Benjamin Chaminade pour un accompagnement</a>
+        <button class="btn-cta-p" onclick="window.print()">📄 Télécharger / Imprimer mon diagnostic</button>
+        <button class="btn-cta-r" onclick="iveReset()">🔄 Recommencer le diagnostic</button>
+      </div>
+      <div class="fn">Indice de Vitalité Écosystémique — Issu de <em>Management Régénératif</em> de Benjamin Chaminade<br>
+        <a href="https://benjaminchaminade.com" target="_blank" rel="noopener noreferrer">benjaminchaminade.com</a></div>
+    </div>
+  </div>
+
+</div>
+<script>
+(function(){
+
+var DIMS = [
+  { id:1, icon:"🌿", titre:"Personnes & Singularités", metaphore:"La Biodiversité",
+    desc:"Diversité des profils, des parcours, des modes de pensée. Dans un écosystème sain, la richesse vient de la différence, pas de l'uniformité.",
+    questions:[
+      "Mon équipe valorise activement des profils, parcours et modes de pensée variés.",
+      "Les critères de recrutement favorisent la complémentarité plutôt que la conformité culturelle.",
+      "Chaque collaborateur trouve du sens dans son travail au-delà de la rémunération.",
+      "Les différences de personnalité et de style de travail sont perçues comme des atouts, pas comme des obstacles.",
+      "L'organisation sait identifier et exploiter les talents singuliers, même atypiques."
+    ],
+    violation:"Monoculture de profils, uniformisation des comportements, perte de sens collectif.",
+    alerte:"Difficulté à innover, profils clonés, collaborateurs qui ne savent plus pourquoi ils travaillent.",
+    analyse:{
+      fort:"Votre biodiversité humaine est un véritable avantage compétitif. Les profils divers pollinisent les idées, créent des solutions inattendues et renforcent la résilience collective. Documentez vos pratiques d'inclusion des singularités pour les transmettre et les protéger lors des prochains recrutements.",
+      moyen:"La diversité existe dans votre organisation mais elle reste sous-exploitée. Certains profils atypiques se conforment pour survivre plutôt que de s'exprimer pour contribuer. L'enjeu est de créer les conditions psychologiques qui permettent à chaque singularité de s'exprimer sans risque.",
+      faible:"La monoculture organisationnelle est une vulnérabilité systémique. Comme un champ de salade infecté par le mildiou, une seule maladie peut tout contaminer. L'uniformité des profils génère des angles morts collectifs qui empêchent l'adaptation aux disruptions du marché."
+    },
+    actions:{
+      urgence:["Cartographiez les styles de pensée de votre équipe (outil Foursight ou MBTI) pour identifier les angles morts collectifs et les profils manquants.", "Identifiez les 3 dernières innovations avortées et analysez si elles l'ont été par manque de diversité de pensée dans le processus de décision.", "Révisez immédiatement vos critères de recrutement : supprimez les exigences d'école ou de parcours standard et remplacez-les par des critères de contribution."],
+      renforcement:["Valorisez publiquement une contribution atypique lors de votre prochain comité pour signaler que la différence est une force.", "Créez un espace mensuel où chacun peut partager une perspective non conventionnelle sur un problème existant."]
+    }
+  },
+  { id:2, icon:"🕸️", titre:"Interactions & Relations", metaphore:"Le Mycélium",
+    desc:"Le réseau de relations qui fait circuler l'information, le soutien et l'énergie. Comme le mycélium qui connecte les arbres d'une forêt.",
+    questions:[
+      "L'information circule librement, sans rétention ni méfiance entre collègues.",
+      "La coopération est naturelle et les objectifs collectifs priment sur la compétition interne.",
+      "Les conflits sont traités ouvertement et de façon constructive, pas évités ou étouffés.",
+      "Je me sens libre d'exprimer mes idées ou préoccupations sans craindre de conséquences négatives.",
+      "Les collaborateurs s'entraident spontanément, même au-delà de leurs périmètres de responsabilité."
+    ],
+    violation:"Cloisonnement, compétition interne toxique, rétention d'information comme source de pouvoir.",
+    alerte:"Évitement de collègues, duplications d'efforts, méfiance généralisée, isolement progressif.",
+    analyse:{
+      fort:"Votre mycélium organisationnel est sain. L'information circule, l'entraide est spontanée et la sécurité psychologique permet l'expression authentique. Ce capital relationnel est précieux et fragile : protégez-le en veillant à ce que vos processus d'évaluation et de promotion ne récompensent pas les comportements individualistes.",
+      moyen:"Votre réseau relationnel fonctionne mais présente des zones de fragilité. Certains cloisonnements freinent la circulation naturelle de l'information. Des compétitions internes latentes consomment de l'énergie qui pourrait être investie dans la création de valeur collective.",
+      faible:"Le tissu relationnel est déchiré. En 2025, nos données montrent que 62% des salariés dans des organisations similaires évitent certains collègues, 40% cachent des informations par peur qu'elles soient utilisées contre eux. Ce niveau de défiance coûte en moyenne 30% de productivité en frictions et duplications d'efforts."
+    },
+    actions:{
+      urgence:["Lancez un questionnaire anonyme en 10 questions sur la collaboration (évitement, rétention d'info, sécurité psychologique) pour objectiver le niveau réel de confiance.", "Réunissez les équipes en tension pour une session de cartographie des interdépendances : montrez concrètement qui a besoin de qui pour réussir.", "Supprimez ou modifiez les indicateurs de performance qui récompensent la compétition interne au détriment de la coopération transverse."],
+      renforcement:["Ritualisez un temps mensuel de partage inter-équipes où chaque service présente ses enjeux actuels pour renforcer l'empathie organisationnelle.", "Créez un système de reconnaissance des comportements coopératifs, visibles de tous."]
+    }
+  },
+  { id:3, icon:"🌊", titre:"Processus & Flux de Travail", metaphore:"Les Rivières",
+    desc:"Les processus sont les rivières de l'organisation. Ils devraient permettre à l'énergie et aux décisions de circuler naturellement.",
+    questions:[
+      "Les processus facilitent le travail sans générer de lourdeurs bureaucratiques inutiles.",
+      "Les décisions peuvent être prises rapidement au bon niveau hiérarchique, sans escalade excessive.",
+      "L'information circule de façon transparente, sans distorsions ni rétentions volontaires.",
+      "Le niveau de réorganisations et de changements de cap est gérable et ne génère pas d'épuisement.",
+      "Je dispose des informations nécessaires pour prendre des décisions éclairées dans mon périmètre."
+    ],
+    violation:"Rigidité procédurale ou chaos permanent, oscillation entre immobilisme et réorganisations incessantes.",
+    alerte:"Délais excessifs de validation, réorganisations trop fréquentes, rumeurs remplaçant les faits officiels.",
+    analyse:{
+      fort:"Vos processus sont des rivières fluides qui portent l'énergie collective vers la création de valeur. La transparence informationnelle permet des décisions éclairées et l'autonomie favorise la responsabilisation. Documentez vos processus les plus efficaces pour qu'ils résistent aux changements de personnel.",
+      moyen:"Vos processus contiennent des goulots d'étranglement qui ralentissent l'action et fatiguent les équipes. L'enjeu est d'identifier les validations inutiles, les réunions sans décision et les circuits d'information trop longs pour les simplifier sans perdre en cohérence.",
+      faible:"Vos processus sont devenus des barrages. Selon nos observations, une innovation peut prendre 14 mois entre l'idée et l'expérimentation dans des organisations à ce niveau de rigidité procédurale. Le temps qu'une idée passe tous les filtres, elle n'est plus innovante. Vos concurrents ont déjà avancé."
+    },
+    actions:{
+      urgence:["Cartographiez le parcours d'une idée ou décision type depuis son émergence jusqu'à son implémentation et identifiez chaque validation inutile à supprimer.", "Donnez aux équipes un mandat clair sur ce qu'elles peuvent décider seules, sans validation hiérarchique, en définissant des seuils d'autonomie explicites.", "Instaurez un canal de communication directe pour les informations stratégiques, court-circuitant les filtres qui distordent ou retardent le message."],
+      renforcement:["Organisez trimestriellement une revue des processus où les équipes identifient et suppriment elles-mêmes une procédure inutile.", "Mesurez le lead time entre émergence d'une idée et première expérimentation et en faites un indicateur de pilotage."]
+    }
+  },
+  { id:4, icon:"🏡", titre:"Espace Physique & Numérique", metaphore:"L'Habitat",
+    desc:"L'environnement dans lequel nous travaillons façonne nos comportements, notre énergie et notre capacité à nous concentrer ou collaborer.",
+    questions:[
+      "L'espace de travail physique favorise à la fois la concentration individuelle et la collaboration collective selon les besoins.",
+      "Le nombre d'outils numériques est maîtrisé et chacun a une utilité clairement définie.",
+      "Je ne me sens pas sous surveillance permanente dans mon travail quotidien.",
+      "Mon environnement numérique (notifications, emails, messageries) ne génère pas de saturation mentale excessive.",
+      "Je dispose d'espaces ou de temps de déconnexion pour récupérer et penser en profondeur."
+    ],
+    violation:"Open-space générateur de chaos cognitif, surcharge d'outils numériques, surveillance déguisée en analytics.",
+    alerte:"Fatigue cognitive chronique, télétravail systématique pour fuir le bureau, saturation attentionnelle permanente.",
+    analyse:{
+      fort:"Votre habitat professionnel soutient réellement le travail. Les espaces de concentration coexistent avec les espaces de collaboration, et l'environnement numérique amplifie vos capacités sans vous asservir. Cet habitat sain est un facteur d'attraction de talents souvent sous-estimé dans vos communications employeur.",
+      moyen:"Votre environnement présente des zones de friction qui consomment de l'énergie cognitive inutilement. La fragmentation numérique et les espaces mal adaptés créent un bruit de fond qui érode la qualité d'attention et réduit la capacité créative sur la durée.",
+      faible:"Votre habitat est devenu hostile à ceux qui l'habitent. L'index Leeman montre que 43% des salariés souffrent d'épuisement attentionnel dans des environnements similaires. Les travailleurs du savoir utilisent en moyenne 10 applications par jour et perdent 62% de leur temps dans des tâches répétitives peu créatrices."
+    },
+    actions:{
+      urgence:["Réalisez un audit de vos outils numériques : listez toutes les applications utilisées, mesurez leur fréquence d'usage et supprimez ou fusionnez celles qui se chevauchent.", "Établissez des règles collectives de notifications (plages horaires, canaux par urgence) en impliquant les équipes dans la définition de ces règles.", "Identifiez et aménagez au moins un espace de concentration profonde dans chaque zone de travail, même symboliquement (casque, signal visuel, zone de silence)."],
+      renforcement:["Testez une journée sans réunion par semaine pour permettre le travail de fond et mesurez l'impact sur la satisfaction et la productivité.", "Faites évaluer par les équipes leur satisfaction vis-à-vis de leur environnement de travail tous les trimestres."]
+    }
+  },
+  { id:5, icon:"🌤️", titre:"Culture d'Entreprise", metaphore:"Le Climat",
+    desc:"La culture, c'est le climat de votre écosystème. Elle se manifeste dans les comportements réels, pas ceux affichés sur les murs.",
+    questions:[
+      "Les valeurs affichées correspondent aux comportements réels observés au quotidien par tous.",
+      "L'erreur est traitée comme une opportunité d'apprentissage et non comme une faute à sanctionner.",
+      "Les managers incarnent les valeurs de l'organisation par leurs actes, pas seulement leurs discours.",
+      "Il existe une liberté réelle de remettre en question les pratiques et décisions sans risque de représailles.",
+      "L'organisation célèbre ses succès collectifs et tire des leçons explicites de ses échecs."
+    ],
+    violation:"Valeurs murales contredites par les comportements managériaux, punition de l'erreur, conformisme déguisé en bienveillance.",
+    alerte:"Turnover élevé, cynisme ambiant, impossibilité de monter des équipes transverses, prise de risque évitée à tout prix.",
+    analyse:{
+      fort:"Votre climat culturel est un écosystème tropical : luxuriant, riche et porteur. Les valeurs vécues créent un environnement de sécurité psychologique où l'innovation, la prise de risque et l'apprentissage par l'erreur sont possibles. Ce climat est votre meilleur argument de rétention des talents et d'attraction de nouveaux profils.",
+      moyen:"Votre culture contient des contradictions entre les valeurs déclarées et les comportements observés. Ces écarts, même perçus comme mineurs, créent du cynisme chez les collaborateurs les plus attentifs. C'est souvent là que les meilleurs talents commencent à chercher ailleurs.",
+      faible:"Votre culture est en hypocrisie organisationnelle avancée. J'ai observé ce phénomène chez une entreprise de conseil qui affichait 'l'intelligence collective' comme valeur cardinale : les bonus étaient 100% individuels, les promotions récompensaient ceux qui gardaient leurs clients jalousement. Résultat : 35% de turnover annuel."
+    },
+    actions:{
+      urgence:["Organisez une session avec vos managers pour comparer les valeurs affichées aux comportements réellement récompensés ou sanctionnés dans l'évaluation annuelle — et alignez-les.", "Créez un rituel de post-mortem bienveillant après chaque projet ou erreur significative pour institutionnaliser l'apprentissage sans culpabilité.", "Supprimez ou modifiez les mécanismes d'incitation (bonus, promotions, visibilité) qui contredisent explicitement vos valeurs déclarées."],
+      renforcement:["Lancez un baromètre trimestriel anonyme mesurant l'écart perçu entre valeurs déclarées et comportements observés.", "Reconnaissez publiquement les comportements qui incarnent les valeurs, pas seulement les résultats chiffrés."]
+    }
+  },
+  { id:6, icon:"⚙️", titre:"Outils & Technologies", metaphore:"Les Extensions",
+    desc:"Les outils ne sont pas neutres. Ils façonnent les comportements et révèlent la vraie philosophie managériale de l'organisation.",
+    questions:[
+      "Les outils technologiques augmentent réellement mes capacités plutôt que de me contraindre.",
+      "Les outils de collaboration favorisent la synergie et la créativité collective plutôt que le contrôle.",
+      "L'environnement numérique permet de travailler de façon fluide sans fragmentation excessive de l'attention.",
+      "Les outils de suivi et de reporting servent l'amélioration continue plutôt que la surveillance.",
+      "Nous évitons d'adopter de nouveaux outils sans évaluation sérieuse de leur valeur ajoutée réelle."
+    ],
+    violation:"Empilement d'outils sans cohérence, surveillance camouflée en analytics, humains au service de la technologie.",
+    alerte:"Plus de 8 applications utilisées quotidiennement, temps excessif en tâches de reporting, anxiété face aux tableaux de bord.",
+    analyse:{
+      fort:"Vos outils sont de véritables extensions de vos capacités, pas des contraintes. Votre philosophie technologique est alignée avec vos valeurs : les outils servent les humains et non l'inverse. Cette maîtrise technologique est un avantage compétitif qui libère du temps et de l'énergie pour la création de valeur réelle.",
+      moyen:"Votre écosystème d'outils présente des redondances et des frictions. Certains outils créent plus de travail qu'ils n'en réduisent. L'enjeu est de rationaliser avec courage : supprimer un outil que les équipes utilisent peu mais qui a coûté cher est une décision difficile mais souvent libératrice.",
+      faible:"Vous êtes devenus les serviteurs de vos propres outils. L'Anatomy of Work 2023 confirme que les travailleurs du savoir perdent 62% de leur temps dans des tâches répétitives et peu créatrices. Vos outils de surveillance érode la confiance et génèrent des comportements défensifs qui annulent tout bénéfice productif."
+    },
+    actions:{
+      urgence:["Réalisez un inventaire complet de tous les outils utilisés, leur coût réel (licence + temps formation + friction cognitive) et leur valeur perçue par les utilisateurs.", "Identifiez les 3 outils les plus générateurs de friction ou de surveillance perçue et engagez une consultation rapide sur leur suppression ou leur remplacement.", "Définissez une charte d'usage des outils de suivi distinguant ce qui sert l'amélioration de ce qui relève de la surveillance — et partagez-la."],
+      renforcement:["Instaurez un processus de validation collective avant tout nouvel outil : les utilisateurs finaux doivent tester et approuver avant déploiement.", "Mesurez annuellement le nombre d'applications utilisées quotidiennement comme indicateur de fragmentation."]
+    }
+  },
+  { id:7, icon:"🍂", titre:"Rythmes & Temporalités", metaphore:"Les Saisons",
+    desc:"L'alternance entre tension et relâchement, production et récupération. Une forêt sans hiver finirait par s'épuiser.",
+    questions:[
+      "Il existe des phases distinctes de production intense et de récupération ou réflexion dans notre organisation.",
+      "Les collaborateurs disposent de temps pour laisser infuser les idées et réfléchir en profondeur.",
+      "Les célébrations des accomplissements sont ritualisées, authentiques et régulières.",
+      "Les priorités sont stables suffisamment longtemps pour permettre une concentration durable sur les sujets importants.",
+      "Je peux terminer ma journée de travail sans un sentiment d'arriéré permanent ou de course sans fin."
+    ],
+    violation:"Sprint perpétuel sans respiration, urgence érigée en mode de fonctionnement par défaut, pas de temps mort créatif.",
+    alerte:"Brainstormings qui tournent à vide, propositions qui recyclent l'existant, créativité éteinte, épuisement chronique généralisé.",
+    analyse:{
+      fort:"Votre organisation respecte les cycles naturels du vivant. L'alternance entre production intense et récupération génère une performance durable, pas arrachée. Vos collaborateurs ont le temps de laisser infuser les idées, ce qui produit une qualité d'innovation qu'aucun sprint forcé ne peut égaler.",
+      moyen:"Vos rythmes présentent des déséquilibres cycliques : des périodes d'urgence non compensées par des phases de récupération. Ce schéma érode progressivement la créativité et la qualité du travail. Les équipes produisent du réchauffé faute de temps pour laisser infuser de nouvelles idées.",
+      faible:"Vous êtes en sprint perpétuel. Le directeur d'une plateforme logistique me confiait : 'On n'a plus le temps de laisser infuser les idées. On produit du réchauffé en permanence.' Le sol créatif est tassé par le passage répété de l'urgence : rien de nouveau ne peut y pousser. L'épuisement est systémique, pas individuel."
+    },
+    actions:{
+      urgence:["Instaurez immédiatement une règle : une réunion sur deux supprimée ou réduite de moitié, en commençant par celles sans ordre du jour clair ou sans décision à prendre.", "Protégez des plages de 2 heures minimum par semaine pour chaque collaborateur, dédiées au travail de fond sans interruption (réunions, notifications, sollicitations).", "Planifiez une 'semaine de respiration' dans les 60 jours, sans délivrables internes ni réunions de reporting — pour recréer l'espace cognitif nécessaire à l'innovation."],
+      renforcement:["Ritualisez la célébration des accomplissements collectifs : même les petites victoires méritent une reconnaissance publique et régulière.", "Créez un indicateur de cadence : ratio entre temps de production intense et temps de récupération ou réflexion, et ciblez 70/30."]
+    }
+  },
+  { id:8, icon:"💎", titre:"Ressources Invisibles", metaphore:"La Mémoire",
+    desc:"La confiance accumulée, les savoirs tacites, les réseaux informels, la mémoire des succès et échecs. Fragiles, longues à construire, rapides à détruire.",
+    questions:[
+      "Les savoirs clés sont documentés et transmis, pas uniquement détenus par quelques personnes indispensables.",
+      "La confiance entre collègues et avec le management est solide et s'approfondit dans le temps.",
+      "L'organisation tire des leçons explicites de ses expériences passées, succès comme échecs.",
+      "Les réseaux informels (personnes ressources, liens de confiance transverses) sont reconnus et valorisés.",
+      "Lorsqu'un collaborateur clé part, ses savoirs et ses relations sont transmis de façon structurée."
+    ],
+    violation:"Amnésie organisationnelle, savoirs emportés par les départs, restructurations qui détruisent les réseaux informels en silence.",
+    alerte:"Onboarding très long, répétition des mêmes erreurs d'une année sur l'autre, clients historiques qui décrochent, perte d'âme progressive.",
+    analyse:{
+      fort:"Votre capital immatériel est activement cultivé. La confiance accumulée, les savoirs documentés et les réseaux informels valorisés constituent un patrimoine organisationnel rare et précieux. Vous avez compris que la vraie valeur d'une organisation n'est pas dans ses actifs tangibles mais dans ce tissu invisible qui fait tenir l'ensemble.",
+      moyen:"Votre capital immatériel existe mais reste vulnérable. Des savoirs critiques reposent sur trop peu de personnes. La mémoire organisationnelle est partielle. Un départ clé ou une restructuration pourrait emporter des années d'apprentissage tacite sans que vous vous en rendiez compte immédiatement.",
+      faible:"Votre capital immatériel s'évapore. J'ai accompagné une ETI industrielle qui a perdu, en 18 mois, l'équivalent de 300 ans d'expérience cumulée suite à un plan de départs volontaires. Les nouveaux embauchés mettent des années à reconstruire ce capital. Entre-temps, les erreurs du passé se répètent et les clients historiques se sentent abandonnés."
+    },
+    actions:{
+      urgence:["Identifiez vos 5 personnes les plus critiques (dont le départ serait catastrophique) et engagez avec chacune une conversation franche sur leur engagement et leurs besoins.", "Lancez un programme d'urgence de documentation des savoirs tacites : interviews filmées, wikis internes, binômes seniors-juniors sur les projets clés.", "Cartographiez vos réseaux informels critiques (qui consulte qui vraiment) et protégez ces connexions lors des prochaines décisions d'organisation."],
+      renforcement:["Ritualisez un processus d'offboarding structuré pour chaque départ : transfert de savoirs, introduction des contacts, documentation des projets en cours.", "Créez des communautés de pratique internes pour maintenir vivante l'expertise collective au-delà des organigrammes."]
+    }
+  }
+];
+
+var PROFILES = [
+  { min:71, max:80, nom:"L'Écosystème Régénératif", emoji:"🌳", color:"#16a34a", bg:"#f0fdf4", border:"#86efac",
+    desc:"Votre organisation est un écosystème vivant exemplaire. Toutes les composantes fonctionnent en synergie, se nourrissant mutuellement. Vous incarnez concrètement ce que le management régénératif cherche à produire : un environnement qui crée plus de valeur qu'il n'en consomme.",
+    posture:"Vous êtes un phare. Votre priorité n'est plus d'améliorer mais de transmettre, documenter et propager. Devenez une source d'inspiration pour votre secteur en partageant ouvertement vos pratiques. Le danger à ce niveau est l'arrogance du 'nous avons trouvé la formule' : restez curieux et continuez à vous questionner tous les 6 mois.",
+    conseil:"Documentez votre patrimoine de pratiques régénératives. Invitez d'autres organisations à apprendre de vous. Et restez vigilant : un changement de direction ou une acquisition mal maîtrisée peuvent déstabiliser un équilibre qui semblait acquis." },
+  { min:58, max:70, nom:"Le Jardin Épanoui", emoji:"🌿", color:"#22c55e", bg:"#f0fdf4", border:"#86efac",
+    desc:"Votre écosystème est fertile et bien entretenu. Des forces réelles dans la plupart des dimensions créent un environnement où les talents s'épanouissent et la performance émerge naturellement. Quelques zones de vigilance méritent attention.",
+    posture:"Vous êtes dans la posture du jardinier vigilant : votre jardin va bien, mais ça ne vous dispense pas de l'entretien quotidien. Identifiez vos 2 dimensions les plus faibles et travaillez-les sans disperser vos efforts. Le maintien de votre vitalité est votre premier défi.",
+    conseil:"Préservez et propagez. Identifiez les pratiques qui expliquent vos forces et faites-en des standards explicites. Renforcez les zones fragiles avant qu'elles ne deviennent des vulnérabilités." },
+  { min:46, max:57, nom:"L'Équilibre Dynamique", emoji:"🌱", color:"#84cc16", bg:"#f7fee7", border:"#bef264",
+    desc:"Votre écosystème est en mouvement. Des forces réelles coexistent avec des fragilités identifiables. Vous n'êtes pas en danger immédiat mais la trajectoire mérite attention : un écosystème à l'équilibre fragile peut basculer rapidement sous l'effet d'un choc externe.",
+    posture:"Trouvez votre composante pivot — celle dont l'amélioration entraînera mécaniquement les autres. Concentrez 80% de vos efforts sur elle pendant 3 mois. Archimède disait : 'Donnez-moi un point d'appui et je soulèverai le monde.' En management régénératif, ce point d'appui s'appelle la composante pivot.",
+    conseil:"Cibler et concentrer. Ne cherchez pas à tout améliorer simultanément. La dispersion est votre pire ennemie à ce niveau. Un chantier bien mené vaut mieux que 8 chantiers à moitié terminés." },
+  { min:38, max:45, nom:"Le Sol Appauvri", emoji:"🍀", color:"#f59e0b", bg:"#fffbeb", border:"#fcd34d",
+    desc:"Vos ressources organisationnelles s'épuisent progressivement. Comme un sol qui a donné sans être nourri, votre écosystème produit encore mais avec des rendements décroissants. Les signaux d'alerte sont visibles pour qui sait les lire.",
+    posture:"Enrichissez le sol avant de replanter. Il serait contre-productif d'exiger davantage de performance sans d'abord recréer les conditions qui la permettent. Votre priorité est de restaurer les fondations — confiance, sens, processus fluides — avant d'optimiser les résultats.",
+    conseil:"Intervenez maintenant, avant que le sol appauvri ne devienne une terre en friche. Identifiez vos 3 composantes les plus faibles et créez un plan de restauration sur 6 mois avec des indicateurs de suivi hebdomadaires." },
+  { min:30, max:37, nom:"La Forêt sous Tension", emoji:"🌲", color:"#ef4444", bg:"#fef2f2", border:"#fca5a5",
+    desc:"Plusieurs composantes souffrent simultanément et créent des interactions négatives entre elles. Comme une forêt sous stress hydrique, les arbres s'affaiblissent mutuellement en se disputant les ressources restantes. L'épuisement collectif est perceptible.",
+    posture:"Adoptez la posture de la jachère active : acceptez de ralentir temporairement pour reconstruire. Stopper n'est pas abandonner, c'est soigner. Constituez une équipe de régénération de 3 à 5 volontaires avec du temps protégé et un mandat clair de reconstruction.",
+    conseil:"Intervenez structurellement. Les initiatives isolées ne suffiront plus. Vous avez besoin d'un plan coordonné, d'une équipe dédiée et d'une communication transparente sur le diagnostic. Le silence nourrit l'anxiété, la transparence crée de l'engagement." },
+  { min:22, max:29, nom:"L'Écosystème Fragmenté", emoji:"🌾", color:"#dc2626", bg:"#fef2f2", border:"#fca5a5",
+    desc:"Les liens entre les composantes de votre écosystème sont rompus. Chaque partie souffre isolément, sans que les forces d'un secteur ne puissent compenser les faiblesses d'un autre. La fragmentation crée une vulnérabilité systémique.",
+    posture:"Reconstruisez d'abord les connexions avant de chercher à optimiser chaque composante. Un écosystème fragmenté n'a pas besoin d'excellence dans une dimension — il a besoin de retrouver un minimum de cohérence entre toutes. Identifiez la composante dont l'amélioration aura le plus d'effets en cascade.",
+    conseil:"Agissez vite mais de façon structurée. Faites appel à un regard externe si nécessaire : dans un écosystème fragmenté, les angles morts se multiplient et les non-dits s'accumulent. Un tiers de confiance peut briser cette paralysie." },
+  { min:13, max:21, nom:"Le Terrain en Friche", emoji:"🏜️", color:"#991b1b", bg:"#fef2f2", border:"#ef4444",
+    desc:"L'abandon progressif est à l'œuvre. Les ressources vitales sont épuisées, les talents sont partis ou sur le départ, les processus ne fonctionnent plus. Comme une friche industrielle, des traces de ce qui existait subsistent mais ne produisent plus de valeur.",
+    posture:"Trois urgences simultanées : protégez vos talents clés (les meilleurs partent en premier car ils ont des options), identifiez une quick win visible en moins de 2 semaines pour prouver que le changement est possible, et faites appel à un accompagnement externe sans délai.",
+    conseil:"La fuite en avant est votre pire ennemi : ne cherchez pas à compenser par plus d'activité ce que l'épuisement a produit. Ralentissez, simplifiez, priorisez. Concentrez toutes vos forces sur une seule composante jusqu'à stabilisation avant d'en aborder une autre." },
+  { min:0, max:12, nom:"La Terre Brûlée", emoji:"💧", color:"#7f1d1d", bg:"#fef2f2", border:"#dc2626",
+    desc:"La situation est critique et systémique. Les dysfonctionnements se renforcent mutuellement dans une spirale descendante. Chaque tentative de solution sans traitement de fond aggrave l'épuisement sans produire de résultat durable.",
+    posture:"L'intervention externe n'est pas une option, c'est une nécessité. Non pas parce que vous êtes incompétent, mais parce qu'un observateur extérieur peut voir ce que vous ne voyez plus et dire ce que vous n'osez plus dire. La première chose à faire est d'arrêter les hémorragies avant de reconstruire.",
+    conseil:"Appliquez la stratégie du triage médical : identifiez la composante dont l'effondrement entraînerait tout le reste et concentrez-y toutes vos forces jusqu'à stabilisation. Toute amélioration sera immédiatement perceptible à ce niveau — c'est votre source d'espoir." }
+];
+
+function getProfile(score) {
+  for (var i=0; i<PROFILES.length; i++) {
+    if (score >= PROFILES[i].min && score <= PROFILES[i].max) return PROFILES[i];
+  }
+  return PROFILES[PROFILES.length-1];
+}
+
+var currentDim = 0;
+var qScores = DIMS.map(function(){ return [5,5,5,5,5]; });
+
+function dimAvg(i) {
+  var s = 0;
+  for (var j=0; j<5; j++) s += qScores[i][j];
+  return Math.round(s/5);
+}
+function totalScore() {
+  var t=0; for(var i=0;i<8;i++) t+=dimAvg(i); return t;
+}
+function scoreColor(s){ return s>=7?"#22c55e":s>=4?"#f59e0b":"#ef4444"; }
+
+function iveScrollTop() {
+  var app=document.getElementById("ive-app"); if(!app) return;
+  var top=app.getBoundingClientRect().top+(window.pageYOffset||document.documentElement.scrollTop)-20;
+  try{ window.scrollTo({top:top,behavior:"smooth"}); } catch(e){ window.scrollTo(0,top); }
+}
+function showScreen(id) {
+  document.querySelectorAll("#ive-app .ive-screen").forEach(function(s){ s.classList.remove("active"); });
+  document.getElementById(id).classList.add("active");
+}
+
+/* INTRO */
+(function buildIntro(){
+  var g=document.getElementById("ive-grid-intro"), h="";
+  DIMS.forEach(function(d){ h+='<div class="i-card"><div class="i-card-icon">'+d.icon+'</div><div class="i-card-meta">'+d.metaphore+'</div></div>'; });
+  g.innerHTML=h;
+})();
+
+/* QUIZ */
+window.iveGoToQuiz=function(){ currentDim=0; showScreen("ive-quiz"); renderQuiz(); iveScrollTop(); };
+
+function renderQuiz(){
+  var d=DIMS[currentDim];
+  var pct=Math.round((currentDim/8)*100);
+  document.getElementById("ive-prog-label").textContent="Dimension "+(currentDim+1)+" sur 8";
+  document.getElementById("ive-prog-pct").textContent=pct+"% complété";
+  document.getElementById("ive-pf").style.width=pct+"%";
+  document.getElementById("ive-dh-bg").textContent=d.icon;
+  document.getElementById("ive-dh-badge").textContent=d.metaphore;
+  document.getElementById("ive-dh-titre").textContent=d.icon+" "+d.titre;
+  document.getElementById("ive-dh-desc").textContent=d.desc;
+  document.getElementById("ive-alerte").textContent=d.alerte;
+  document.getElementById("ive-btn-next").textContent=currentDim<7?"Dimension suivante →":"Voir mon diagnostic →";
+  var h="";
+  d.questions.forEach(function(q,qi){
+    var val=qScores[currentDim][qi], pf=val*10;
+    h+='<div class="qc"><div class="qt"><span class="qn">'+(qi+1)+'.</span>'+q+'</div>'
+      +'<div class="sl"><span>Pas du tout d\'accord</span><span>Tout à fait d\'accord</span></div>'
+      +'<div class="sr"><span class="se">0</span>'
+      +'<input type="range" min="0" max="10" step="1" value="'+val+'" id="ive-sl-'+qi+'" '
+      +'oninput="iveSlider('+qi+',this.value)" '
+      +'style="background:linear-gradient(to right,#2d6a4f 0%,#2d6a4f '+pf+'%,#e2e8f0 '+pf+'%,#e2e8f0 100%)">'
+      +'<span class="se">10</span>'
+      +'<span class="sv" id="ive-val-'+qi+'" style="color:'+scoreColor(val)+'">'+val+'</span></div></div>';
+  });
+  document.getElementById("ive-questions").innerHTML=h;
+}
+
+window.iveSlider=function(qi,raw){
+  var val=Number(raw); qScores[currentDim][qi]=val;
+  var v=document.getElementById("ive-val-"+qi); v.textContent=val; v.style.color=scoreColor(val);
+  document.getElementById("ive-sl-"+qi).style.background=
+    "linear-gradient(to right,#2d6a4f 0%,#2d6a4f "+(val*10)+"%,#e2e8f0 "+(val*10)+"%,#e2e8f0 100%)";
+};
+
+window.iveNext=function(){
+  if(currentDim<7){ currentDim++; renderQuiz(); iveScrollTop(); }
+  else{ buildResults(); showScreen("ive-results"); iveScrollTop(); }
+};
+window.ivePrev=function(){
+  if(currentDim>0){ currentDim--; renderQuiz(); iveScrollTop(); }
+  else{ showScreen("ive-intro"); iveScrollTop(); }
+};
+window.iveReset=function(){
+  qScores=DIMS.map(function(){ return [5,5,5,5,5]; });
+  currentDim=0; showScreen("ive-intro"); iveScrollTop();
+};
+
+/* RÉSULTATS */
+function buildResults(){
+  var total=totalScore();
+  var prof=getProfile(total);
+
+  document.getElementById("ive-re").textContent=prof.emoji;
+  var pill=document.getElementById("ive-rp"); pill.textContent=prof.nom; pill.style.background=prof.color;
+  document.getElementById("ive-rs").textContent=total;
+  document.getElementById("ive-rpn").innerHTML="Score global sur 80 points";
+
+  /* Profil box */
+  var pb=document.getElementById("ive-profil-box");
+  pb.style.borderColor=prof.border;
+  document.getElementById("ive-profil-nom").textContent=prof.nom;
+  document.getElementById("ive-profil-desc").textContent=prof.desc;
+  document.getElementById("ive-profil-posture").textContent=prof.posture;
+
+  /* Chips */
+  var sh="";
+  DIMS.forEach(function(d,i){
+    var s=dimAvg(i), c=scoreColor(s);
+    sh+='<div class="sc"><span class="sc-i">'+d.icon+'</span><span class="sc-v" style="color:'+c+'">'+s+'/10</span></div>';
+  });
+  document.getElementById("ive-ss").innerHTML=sh;
+
+  buildRadar();
+
+  /* Diag box */
+  var db=document.getElementById("ive-diag-box");
+  db.style.background=prof.bg; db.style.borderColor=prof.border;
+  var dt=document.getElementById("ive-diag-titre"); dt.style.color=prof.color;
+  dt.textContent="📋 Plan d'action — "+prof.nom;
+  document.getElementById("ive-diag-texte").textContent=prof.conseil;
+
+  /* Détail dimensions */
+  var dh="";
+  DIMS.forEach(function(d,i){
+    var s=dimAvg(i), c=scoreColor(s), pct=s*10;
+    var analyseKey=s>=7?"fort":s>=4?"moyen":"faible";
+    var analyse=d.analyse[analyseKey];
+    var actionsKey=s<5?"urgence":"renforcement";
+    var actions=d.actions[actionsKey];
+    var actClass=s<5?"action-urgent":s<7?"action-moyen":"action-fort";
+    var actLabel=s<5?"⚡ 3 actions prioritaires":"🔧 Actions de consolidation";
+    if(s>=7){ actLabel="✅ Actions pour pérenniser"; }
+
+    var actHtml='<div class="actions-wrap '+actClass+'">'
+      +'<div class="actions-titre" style="color:'+(s<5?"#991b1b":s<7?"#92400e":"#14532d")+'">'+actLabel+'</div>';
+    actions.forEach(function(a,ai){
+      actHtml+='<div class="action-item"><span class="action-num">'+(ai+1)+'</span><span>'+a+'</span></div>';
+    });
+    actHtml+='</div>';
+
+    dh+='<div class="drc">'
+      +'<div class="drc-top"><div class="drc-left">'
+      +'<span class="drc-icon">'+d.icon+'</span>'
+      +'<div><div class="drc-name">'+d.titre+'</div><div class="drc-meta">'+d.metaphore+'</div></div>'
+      +'</div><span class="drc-score" style="color:'+c+'">'+s+'<span style="font-size:13px;color:#94a3b8">/10</span></span></div>'
+      +'<div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:linear-gradient(90deg,'+c+'88,'+c+')"></div></div>'
+      +'<div class="analyse">'+analyse+'</div>'
+      +actHtml
+      +'</div>';
+  });
+  document.getElementById("ive-dims-detail").innerHTML=dh;
+
+  /* Zones urgence / force */
+  var sorted=[];
+  DIMS.forEach(function(d,i){ sorted.push({d:d,s:dimAvg(i)}); });
+  sorted.sort(function(a,b){ return a.s-b.s; });
+
+  var uh="";
+  for(var i=0;i<Math.min(3,sorted.length);i++){
+    var itm=sorted[i];
+    var acts=itm.d.actions.urgence;
+    uh+='<div class="zi"><span style="font-size:20px">'+itm.d.icon+'</span>'
+      +'<div class="zi-right">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between">'
+      +'<span class="zi-name" style="color:#7f1d1d">'+itm.d.titre+'</span>'
+      +'<span class="zi-score" style="color:#ef4444">'+itm.s+'/10</span></div>'
+      +'<ul class="zi-actions">';
+    acts.slice(0,3).forEach(function(a){ uh+='<li>'+a+'</li>'; });
+    uh+='</ul></div></div>';
+  }
+  document.getElementById("ive-urgence").innerHTML=uh;
+
+  var fh="";
+  for(var i=sorted.length-1;i>=Math.max(sorted.length-3,0);i--){
+    var itm=sorted[i];
+    fh+='<div class="zi"><span style="font-size:20px">'+itm.d.icon+'</span>'
+      +'<div class="zi-right">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between">'
+      +'<span class="zi-name" style="color:#166534">'+itm.d.titre+'</span>'
+      +'<span class="zi-score" style="color:#22c55e">'+itm.s+'/10</span></div>'
+      +'<div style="font-size:11px;color:#166534;margin-top:3px">'+itm.d.analyse.fort.substring(0,120)+'…</div>'
+      +'</div></div>';
+  }
+  document.getElementById("ive-force").innerHTML=fh;
+}
+
+function buildRadar(){
+  var svg=document.getElementById("ive-radar");
+  var center=120,maxR=96,n=8;
+  var scores=DIMS.map(function(_,i){ return dimAvg(i); });
+  function pt(i,r){ var a=(Math.PI*2*i)/n-Math.PI/2; return{x:center+r*Math.cos(a),y:center+r*Math.sin(a)}; }
+  function pts(r){ return DIMS.map(function(_,i){ var p=pt(i,r); return p.x+","+p.y; }).join(" "); }
+  var h="";
+  [20,40,60,80,96].forEach(function(l){ h+='<polygon points="'+pts(l)+'" fill="none" stroke="#e2e8f0" stroke-width="1"/>'; });
+  for(var i=0;i<n;i++){ var p=pt(i,maxR); h+='<line x1="'+center+'" y1="'+center+'" x2="'+p.x+'" y2="'+p.y+'" stroke="#e2e8f0" stroke-width="1"/>'; }
+  var sp=scores.map(function(s,i){ var r=(s/10)*maxR; var p=pt(i,r); return p.x+","+p.y; }).join(" ");
+  h+='<polygon points="'+sp+'" fill="rgba(45,106,79,0.18)" stroke="#2d6a4f" stroke-width="2"/>';
+  scores.forEach(function(s,i){ var r=(s/10)*maxR; var p=pt(i,r); h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="5" fill="#2d6a4f" stroke="white" stroke-width="2"/>'; });
+  DIMS.forEach(function(d,i){ var p=pt(i,maxR+20); h+='<text x="'+p.x+'" y="'+p.y+'" text-anchor="middle" dominant-baseline="middle" font-size="13">'+d.icon+'</text>'; });
+  svg.innerHTML=h;
+}
+
+})();
+</script>
+</body>
+</html>
