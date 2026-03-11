@@ -165,8 +165,105 @@
     #ive-app .fn a { color:var(--vv); text-decoration:none; }
 
     @media print {
-      #ive-app .no-print { display:none !important; }
-      #ive-app { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      /* Masquer boutons et nav */
+      #ive-app .no-print, #ive-app .btn-p, #ive-app .btn-s, #ive-app .btn-n,
+      #ive-app .qh, #ive-app #ive-intro, #ive-app #ive-quiz,
+      #ive-app .cta-stack, #ive-app .btn-cta-c, #ive-app .btn-cta-p, #ive-app .btn-cta-r
+        { display:none !important; }
+
+      #ive-app { -webkit-print-color-adjust:exact; print-color-adjust:exact; background:#fff !important; }
+      body { margin:0; padding:0; background:#fff !important; }
+
+      /* HEADER résultats : fond blanc, texte vert foncé */
+      #ive-app .rh {
+        background: #fff !important;
+        border-bottom: 2px solid #22c55e;
+        padding: 20px 20px 16px;
+      }
+      #ive-app .rb { color: #166534 !important; }
+      #ive-app .re { color: #000 !important; }
+      #ive-app .rp { background: #dcfce7 !important; color: #14532d !important; border: 1px solid #86efac; }
+      #ive-app .rsb { color: #14532d !important; }
+      #ive-app .rsd { color: #22c55e !important; }
+      #ive-app .rgl { color: #166534 !important; }
+      #ive-app .rpn { color: #374151 !important; }
+      #ive-app .rpn strong { color: #14532d !important; }
+
+      /* Profil box : fond vert très clair */
+      #ive-app .profil-box {
+        background: #f0fdf4 !important;
+        border-color: #86efac !important;
+      }
+      #ive-app .profil-nom { color: #14532d !important; }
+      #ive-app .profil-desc { color: #374151 !important; }
+      #ive-app .profil-posture-label { color: #166534 !important; }
+      #ive-app .profil-posture { color: #1e293b !important; }
+
+      /* Chips */
+      #ive-app .sc {
+        background: #f0fdf4 !important;
+        border-color: #86efac !important;
+      }
+
+      /* Radar : agrandi, fond blanc */
+      #ive-app .radar-wrap {
+        background: #fff !important;
+        border: 1px solid #e2e8f0;
+        display: none !important;
+      }
+      #ive-app #ive-radar-print-wrap {
+        display: block !important;
+        text-align: center;
+        margin: 16px auto;
+      }
+      #ive-app #ive-radar-print {
+        display: block !important;
+        width: 480px;
+        height: 480px;
+        margin: 0 auto;
+      }
+
+      /* Corps résultats */
+      #ive-app .rbody { padding: 16px 20px; }
+      #ive-app .stit { color: #14532d !important; }
+
+      /* Diag box */
+      #ive-app .diag-box { background: #f0fdf4 !important; border-color: #86efac !important; }
+      #ive-app .diag-titre { color: #14532d !important; }
+      #ive-app .diag-texte { color: #374151 !important; }
+      #ive-app .diag-ref { background: #f8fafc !important; color: #374151 !important; }
+
+      /* Cards dimension */
+      #ive-app .drc { box-shadow: none !important; border-color: #e2e8f0 !important; }
+      #ive-app .analyse { background: #f8fafc !important; border-left-color: #86efac !important; }
+
+      /* Actions */
+      #ive-app .action-urgent .action-item { background: #fef2f2 !important; border-color: #fca5a5 !important; }
+      #ive-app .action-moyen  .action-item { background: #fffbeb !important; border-color: #fcd34d !important; }
+      #ive-app .action-fort   .action-item { background: #f0fdf4 !important; border-color: #86efac !important; }
+
+      /* Zones urgence / force */
+      #ive-app .dual-grid { grid-template-columns: 1fr 1fr; }
+
+      /* Livre box : fond vert très clair au lieu de vert foncé */
+      #ive-app .livre-box {
+        background: #f0fdf4 !important;
+        border: 1px solid #86efac;
+        color: #1e293b !important;
+      }
+      #ive-app .l-badge { color: #166534 !important; }
+      #ive-app .l-titre { color: #14532d !important; }
+      #ive-app .l-desc { color: #374151 !important; }
+      #ive-app .oi { background: #dcfce7 !important; }
+      #ive-app .oi-t { color: #14532d !important; }
+      #ive-app .oi-d { color: #374151 !important; }
+
+      /* Footer */
+      #ive-app .fn { color: #64748b !important; }
+      #ive-app .fn a { color: #166534 !important; }
+
+      /* Barre de progression quiz : masquée */
+      #ive-app .pb, #ive-app .pf { display: none !important; }
     }
   </style>
 </head>
@@ -223,6 +320,10 @@
       </div>
       <div class="ss" id="ive-ss"></div>
       <div class="radar-wrap"><svg id="ive-radar" width="240" height="240" viewBox="0 0 240 240"></svg></div>
+      <!-- Radar agrandi pour impression uniquement -->
+      <div id="ive-radar-print-wrap" style="display:none;">
+        <svg id="ive-radar-print" width="480" height="480" viewBox="0 0 480 480" style="display:block;margin:0 auto;"></svg>
+      </div>
     </div>
     <div class="rbody">
       <div class="diag-box" id="ive-diag-box">
@@ -660,8 +761,7 @@ function buildResults(){
 }
 
 function buildRadar(){
-  var svg=document.getElementById("ive-radar");
-  var center=120,maxR=96,n=8;
+  var center=120, maxR=96, n=8;
   var scores=DIMS.map(function(_,i){ return dimAvg(i); });
   function pt(i,r){ var a=(Math.PI*2*i)/n-Math.PI/2; return{x:center+r*Math.cos(a),y:center+r*Math.sin(a)}; }
   function pts(r){ return DIMS.map(function(_,i){ var p=pt(i,r); return p.x+","+p.y; }).join(" "); }
@@ -672,7 +772,54 @@ function buildRadar(){
   h+='<polygon points="'+sp+'" fill="rgba(45,106,79,0.18)" stroke="#2d6a4f" stroke-width="2"/>';
   scores.forEach(function(s,i){ var r=(s/10)*maxR; var p=pt(i,r); h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="5" fill="#2d6a4f" stroke="white" stroke-width="2"/>'; });
   DIMS.forEach(function(d,i){ var p=pt(i,maxR+20); h+='<text x="'+p.x+'" y="'+p.y+'" text-anchor="middle" dominant-baseline="middle" font-size="13">'+d.icon+'</text>'; });
-  svg.innerHTML=h;
+  document.getElementById("ive-radar").innerHTML=h;
+
+  /* ---- RADAR PRINT (grand, avec légendes texte) ---- */
+  var pc=240, pmaxR=170, n=8;
+  function ppt(i,r){ var a=(Math.PI*2*i)/n-Math.PI/2; return{x:pc+r*Math.cos(a),y:pc+r*Math.sin(a)}; }
+  function ppts(r){ return DIMS.map(function(_,i){ var p=ppt(i,r); return p.x+","+p.y; }).join(" "); }
+  var ph="";
+
+  /* Grille */
+  [34,68,102,136,170].forEach(function(l,li){
+    var val=(li+1)*2;
+    ph+='<polygon points="'+ppts(l)+'" fill="none" stroke="#cbd5e1" stroke-width="1"/>';
+    /* valeur sur l'axe vertical */
+    ph+='<text x="'+(pc+4)+'" y="'+(pc-l+4)+'" font-size="9" fill="#94a3b8" font-family="Georgia,serif">'+val+'</text>';
+  });
+  /* Axes */
+  for(var i=0;i<n;i++){
+    var ep=ppt(i,pmaxR);
+    ph+='<line x1="'+pc+'" y1="'+pc+'" x2="'+ep.x+'" y2="'+ep.y+'" stroke="#cbd5e1" stroke-width="1"/>';
+  }
+  /* Zone scores */
+  var psp=scores.map(function(s,i){ var r=(s/10)*pmaxR; var p=ppt(i,r); return p.x+","+p.y; }).join(" ");
+  ph+='<polygon points="'+psp+'" fill="rgba(34,197,94,0.12)" stroke="#16a34a" stroke-width="2.5"/>';
+  /* Points + score */
+  scores.forEach(function(s,i){
+    var r=(s/10)*pmaxR; var p=ppt(i,r);
+    ph+='<circle cx="'+p.x+'" cy="'+p.y+'" r="6" fill="#16a34a" stroke="white" stroke-width="2"/>';
+    /* score près du point */
+    var lp=ppt(i,r+16);
+    ph+='<text x="'+lp.x+'" y="'+lp.y+'" text-anchor="middle" dominant-baseline="middle" font-size="11" font-weight="bold" fill="#14532d" font-family="Georgia,serif">'+s+'/10</text>';
+  });
+  /* Légendes : icône + nom court */
+  DIMS.forEach(function(d,i){
+    var labelR=pmaxR+36;
+    var p=ppt(i,labelR);
+    var anchor="middle";
+    var dx=Math.cos((Math.PI*2*i)/n-Math.PI/2);
+    if(dx>0.3) anchor="start";
+    else if(dx<-0.3) anchor="end";
+    /* icône */
+    ph+='<text x="'+p.x+'" y="'+(p.y-7)+'" text-anchor="'+anchor+'" dominant-baseline="middle" font-size="16">'+d.icon+'</text>';
+    /* nom */
+    var shortName=d.titre.length>18 ? d.titre.substring(0,16)+'…' : d.titre;
+    ph+='<text x="'+p.x+'" y="'+(p.y+10)+'" text-anchor="'+anchor+'" dominant-baseline="middle" font-size="9.5" fill="#374151" font-family="Georgia,serif">'+shortName+'</text>';
+  });
+
+  var printSvg=document.getElementById("ive-radar-print");
+  if(printSvg){ printSvg.innerHTML=ph; }
 }
 
 })();
